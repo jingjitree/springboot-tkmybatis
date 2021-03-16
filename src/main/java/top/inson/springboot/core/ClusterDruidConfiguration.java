@@ -39,6 +39,7 @@ public class ClusterDruidConfiguration {
         return dataSource;
     }
 
+    //session工厂
     @Bean
     public SqlSessionFactory clusterSqlSessionFactory(
             @Qualifier("clusterDataSource") DataSource clusterDataSource) throws Exception{
@@ -56,6 +57,7 @@ public class ClusterDruidConfiguration {
         return factoryBean.getObject();
     }
 
+    //会话管理
     @Bean
     public SqlSessionTemplate clusterSqlSessionTemplate(
             @Qualifier("clusterSqlSessionFactory") SqlSessionFactory clusterSqlSessionFactory){
@@ -63,6 +65,7 @@ public class ClusterDruidConfiguration {
         return template;
     }
 
+    //事务管理
     @Bean
     public DataSourceTransactionManager clusterTransactionManager(
             @Qualifier("clusterDataSource") DataSource clusterDataSource){

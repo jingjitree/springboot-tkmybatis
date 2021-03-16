@@ -36,6 +36,7 @@ public class DruidConfiguration {
     @Value("${spring.datasource.master.password}")
     private String password;
 
+    //druid控制台
     @Bean
     public ServletRegistrationBean<StatViewServlet> druidStatViewServlet(){
         ServletRegistrationBean<StatViewServlet> registrationBean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
@@ -94,6 +95,7 @@ public class DruidConfiguration {
         return template;
     }
 
+    //事务管理
     @Bean
     @Primary
     public DataSourceTransactionManager transactionManager(
