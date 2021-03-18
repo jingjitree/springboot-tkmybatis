@@ -8,6 +8,11 @@ spring:
     name: springboot-tkmybatis
   profiles:
     active: @profile.active@
+  #接口响应日期格式化的类型
+  jackson:
+    default-property-inclusion: ALWAYS
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -43,10 +48,16 @@ spring:
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
 
+#mybatis配置
 mybatis:
-  configuration:
-    #配置下划线转驼峰式命名
-    map-underscore-to-camel-case: true
+  config-location: classpath:mybatis-config.xml
+  master:
+    typeAliasesPackage: top.inson.springboot.entity
+    mapperLocations: classpath:mappers/*.xml
+  cluster:
+    typeAliasesPackage: top.inson.springboot.cluster.entity
+    mapperLocations: classpath:clusterMapper/*.xml
+
 
 pagehelper:
   # dialect: ①

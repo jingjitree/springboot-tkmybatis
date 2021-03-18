@@ -15,6 +15,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.spring.annotation.MapperScan;
@@ -26,6 +27,12 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = "top.inson.springboot.dao",
         sqlSessionTemplateRef = "sqlSessionTemplate", markerInterface = ITkBaseMapper.class)
 public class DruidConfiguration {
+    @Value("${mybatis.config-location}")
+    private String configLocation;
+    @Value("${mybatis.master.typeAliasesPackage}")
+    private String typeAliasesPackage;
+    @Value("${mybatis.master.mapperLocations}")
+    private String mapperLocations;
 
     @Value("${spring.datasource.master.url}")
     private String url;
@@ -77,13 +84,14 @@ public class DruidConfiguration {
     public SqlSessionFactory sqlSessionFactory(
             @Qualifier("dataSource") DataSource dataSource) throws Exception{
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setConfiguration(new org.apache.ibatis.session.Configuration());
         //使用数据源连接数据库
         factoryBean.setDataSource(dataSource);
+
+        factoryBean.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
         //指定entity和mapper的xml路径
-        factoryBean.setTypeAliasesPackage("top.inson.springboot.entity");
+        factoryBean.setTypeAliasesPackage(typeAliasesPackage);
         factoryBean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources(mapperLocations));
         return factoryBean.getObject();
     }
 

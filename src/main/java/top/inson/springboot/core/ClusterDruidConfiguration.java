@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.spring.annotation.MapperScan;
@@ -20,6 +21,13 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = "top.inson.springboot.cluster.dao",
         sqlSessionTemplateRef = "clusterSqlSessionTemplate", markerInterface = ITkBaseMapper.class)
 public class ClusterDruidConfiguration {
+    @Value("${mybatis.config-location}")
+    private String configLocation;
+    @Value("${mybatis.cluster.typeAliasesPackage}")
+    private String typeAliasesPackage;
+    @Value("${mybatis.cluster.mapperLocations}")
+    private String mapperLocations;
+
     @Value("${spring.datasource.cluster.url}")
     private String url;
 
@@ -44,15 +52,14 @@ public class ClusterDruidConfiguration {
     public SqlSessionFactory clusterSqlSessionFactory(
             @Qualifier("clusterDataSource") DataSource clusterDataSource) throws Exception{
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-        factoryBean.setConfiguration(configuration);
         //数据源连接
         factoryBean.setDataSource(clusterDataSource);
 
+        factoryBean.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
         //指定entity和mapper的路径
-        factoryBean.setTypeAliasesPackage("top.inson.springboot.cluster.entity");
+        factoryBean.setTypeAliasesPackage(typeAliasesPackage);
         factoryBean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath:clusterMapper/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources(mapperLocations));
 
         return factoryBean.getObject();
     }
