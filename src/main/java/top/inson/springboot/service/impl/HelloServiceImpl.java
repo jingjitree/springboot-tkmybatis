@@ -1,5 +1,6 @@
 package top.inson.springboot.service.impl;
 
+import cn.hutool.core.date.DatePattern;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -22,7 +23,9 @@ public class HelloServiceImpl implements IHelloService {
     private IAnimalMapper animalMapper;
 
 
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder()
+            .setDateFormat(DatePattern.NORM_DATETIME_PATTERN)
+            .create();
 
     @Override
     public HelloDto sayHello() {
