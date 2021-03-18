@@ -48,6 +48,9 @@ spring:
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
 
+logging:
+  config: classpath:logback-black.xml
+
 #mybatis配置
 mybatis:
   config-location: classpath:mybatis-config.xml
